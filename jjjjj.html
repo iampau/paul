@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #task-container {
+            margin-top: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+        }
+
+        li button {
+            background-color: #ff5252;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
+    <title>To-Do List</title>
+</head>
+<body>
+    <div class="container">
+        <h1>To-Do List</h1>
+        <div id="task-container">
+            <input type="text" id="task-input" placeholder="Add a new task">
+            <button onclick="addTask()">Submit</button>
+            <ul id="task-list"></ul>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            loadTasks();
+        });
+
+        function addTask() {
+            const taskInput = document.getElementById("task-input");
+            const taskText = taskInput.value.trim();
+
+            if (taskText !== "") {
+                const taskList = document.getElementById("task-list");
+
+                // Create a new task item
+                const taskItem = document.createElement("li");
+                taskItem.innerHTML = `
+                    <span>${taskText}</span>
+                    <button onclick="deleteTask(this)">Delete</button>
+                `;
+
+                // Append the new task to the top of the list
+                taskList.insertBefore(taskItem, taskList.firstChild);
+
+                // Save tasks to local storage
+                saveTasks();
+
+                // Clear the input field
+                taskInput.value = "";
+            }
+        }
+
+        function deleteTask(button) {
+            const taskItem = button.parentNode;
+            const taskList = taskItem.parentNode;
+
+            // Remove the task from the list
+            taskList.removeChild(taskItem);
+
+            // Save tasks to local storage
+            saveTasks();
+        }
+
+        function saveTasks() {
+            const taskList = document.getElementById("task-list");
+            const tasks = taskList.innerHTML;
+
+            // Save tasks to local storage
+            localStorage.setItem("tasks", tasks);
+        }
+
+        function loadTasks() {
+            const taskList = document.getElementById("task-list");
+            const savedTasks = localStorage.getItem("tasks");
+
+            if (savedTasks) {
+                // Load tasks from local storage
+                taskList.innerHTML = savedTasks;
+            }
+        }
+    </script>
+</body>
+</html>
